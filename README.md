@@ -1,7 +1,4 @@
 # GyroscopeImageDemo
-Demo for Image sliding with Gyroscope Sensor
-
-![图片随陀螺仪传感器滑动效果](http://upload-images.jianshu.io/upload_images/10012358-1a48e2ed2063be96?imageMogr2/auto-orient/strip)
 
 在使用`GyroscopeImageView`控件时，需要告知我们控件的宽高，这样我们能合理地对图像尺寸做处理:
 ```java
@@ -27,7 +24,6 @@ Picasso.get()
   }
 ```
 
-![平滑的过度动画](http://upload-images.jianshu.io/upload_images/10012358-b455fb46f5bae521?imageMogr2/auto-orient/strip)
          
 平滑转场:
 ```java
