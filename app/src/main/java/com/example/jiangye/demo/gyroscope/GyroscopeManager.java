@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.ToDoubleBiFunction;
 
 /**
  * 创建时间: 2018/01/12 12:13 <br>
@@ -39,7 +38,7 @@ public class GyroscopeManager implements SensorEventListener {
   private List<Activity> mActivityList = new ArrayList<>();
 
   private SensorManager sensorManager;
-  private long mEndTimestamp;
+  private long mLastTimestamp;
   private double mMaxAngle = Math.PI / 2;
 
   private GyroscopeManager() {
@@ -53,7 +52,7 @@ public class GyroscopeManager implements SensorEventListener {
     return InstanceHolder.sGyroscopeManager;
   }
 
-  public void addView(GyroscopeImageView gyroscopeImageView) {
+  protected void addView(GyroscopeImageView gyroscopeImageView) {
     if (mActivityList.contains(getActivityFromView(gyroscopeImageView))) {
       mViewsMap.put(gyroscopeImageView, true);
     } else {
@@ -61,7 +60,7 @@ public class GyroscopeManager implements SensorEventListener {
     }
   }
 
-  public void removeView(GyroscopeImageView gyroscopeImageView) {
+  protected void removeView(GyroscopeImageView gyroscopeImageView) {
     mViewsMap.remove(gyroscopeImageView);
   }
 
@@ -78,10 +77,15 @@ public class GyroscopeManager implements SensorEventListener {
     if (sensorManager == null) {
       sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
     }
-    Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-    //灵敏度从快到慢 可选择: SENSOR_DELAY_FASTEST; SENSOR_DELAY_GAME; SENSOR_DELAY_NORMAL; SENSOR_DELAY_UI
-    sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_GAME);
-    mEndTimestamp = 0;
+
+    Sensor sensor;
+
+    if (sensorManager != null) {
+      sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+      //灵敏度从快到慢 可选择: SENSOR_DELAY_FASTEST; SENSOR_DELAY_GAME; SENSOR_DELAY_NORMAL; SENSOR_DELAY_UI
+      sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_GAME);
+      mLastTimestamp = 0;
+    }
   }
 
   public void unregister(Activity activity) {
@@ -98,14 +102,14 @@ public class GyroscopeManager implements SensorEventListener {
   @Override public void onSensorChanged(SensorEvent event) {
 
     if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
-      if (mEndTimestamp != 0) {
+      if (mLastTimestamp != 0) {
         for (Map.Entry<GyroscopeImageView, Boolean> entry : mViewsMap.entrySet()) {
           //只处理集合中 value 为 true 的 view
           if (entry.getValue()) {
             entry.getKey().mAngleX +=
-                event.values[0] * (event.timestamp - mEndTimestamp) * NS2S * 2.0f;
+                event.values[0] * (event.timestamp - mLastTimestamp) * NS2S * 2.0f;
             entry.getKey().mAngleY +=
-                event.values[1] * (event.timestamp - mEndTimestamp) * NS2S * 2.0f;
+                event.values[1] * (event.timestamp - mLastTimestamp) * NS2S * 2.0f;
             if (entry.getKey().mAngleX > mMaxAngle) {
               entry.getKey().mAngleX = mMaxAngle;
             }
@@ -123,7 +127,7 @@ public class GyroscopeManager implements SensorEventListener {
           }
         }
       }
-      mEndTimestamp = event.timestamp;
+      mLastTimestamp = event.timestamp;
     }
   }
 
