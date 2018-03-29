@@ -6,13 +6,13 @@
 
 欢迎讨论并提出您的宝贵建议。
 
-## Use GyroscopeImageView Just Like ImageView
+## Use GyroscopeImageView just like ImageView
 
 
 <img src="screenshots/GyroscopeImageView.gif" width="270">
 
 
-在使用`GyroscopeImageView`控件时，若用 Picasso 加载图片 ，可利用 `GyroscopeTransFormation`， 传入控件的宽高，以合理地对图像尺寸做处理(当然你也可以自己处理图像的加载和图像的大小):
+在使用`GyroscopeImageView`控件时，若用 Picasso 加载图片 ，可利用 `GyroscopeTransFormation`， 传入控件的宽高即可合理地对图像尺寸做处理(当然你也可以自己处理图像的加载和图像的大小):
 ```java
 //用 Picasso加载图像 可将控件的宽高传入自定义的 TransFormation 来处理图像大小
 Picasso.get()
@@ -21,7 +21,8 @@ Picasso.get()
     .into(gyroscopeImageView);
 ```
 
-## Register the GyroscopeManager in Activity
+## Register the GyroscopeManager in related Activity
+
 在相关`Activity`的`onResume`和`onPause`中对陀螺仪传感器进行注册和注销监听:
 ```java
   @Override protected void onResume() {
